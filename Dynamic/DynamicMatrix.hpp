@@ -5,7 +5,7 @@
 #ifndef DYNAMICMATRIX_HPP
 #define DYNAMICMATRIX_HPP
 
-#include "IMatrix.hpp"
+#include "../IMatrix.hpp"
 
 #include <iostream>
 #include <assert.h>
