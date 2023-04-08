@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/build",
+  "command": "/usr/bin/g++   -g -Werror -std=gnu++20 -o CMakeFiles/main.dir/main.cpp.o -c \"/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/main.cpp\"",
+  "file": "/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/main.cpp"
+},
+{
+  "directory": "/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/build",
+  "command": "/usr/bin/g++   -g -Werror -std=gnu++20 -o CMakeFiles/main.dir/DynamicMatrix.cpp.o -c \"/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/DynamicMatrix.cpp\"",
+  "file": "/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/DynamicMatrix.cpp"
+}
+]
