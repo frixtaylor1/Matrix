@@ -1,3 +1,0 @@
-/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/build/CMakeFiles/main.dir
-/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/build/CMakeFiles/edit_cache.dir
-/media/frix/Nuevo vol/ESTUDIO/cmake/Game/src/application/Core/Math/Matrix/Dynamic/build/CMakeFiles/rebuild_cache.dir
