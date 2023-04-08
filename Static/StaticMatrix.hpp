@@ -11,15 +11,17 @@
 #include <assert.h>
 #include <array>
 
-template <typename ItemType, const std::size_t nbItems>
-using Array = std::array<ItemType, nbItems>;
 
-template <typename ItemType, const std::size_t Rows, const std::size_t Columns>
-class Matrix : public IMatrix
+template <typename ItemType, const std::size_t Rows = 0, const std::size_t Columns = 0>
+class StaticMatrix : public IMatrix
 {
 public:
-    Matrix() noexcept = default;
-    Matrix(const Array < Array<ItemType, Columns>, Rows >& items) noexcept
+
+    template <typename Type, const std::size_t nbItems>
+    using Array = std::array<Type, nbItems>;
+
+    StaticMatrix() noexcept = default;
+    StaticMatrix(const Array < Array<ItemType, Columns>, Rows >& items) noexcept
         : m_items(items)
     {}
 
@@ -38,7 +40,17 @@ public:
         return m_items;
     }
     
-    constexpr const bool operator == (Matrix const& rhs) const noexcept
+    constexpr static const StaticMatrix identityMatrix() noexcept
+    {
+        assert(Rows == Columns);
+        StaticMatrix<ItemType, Rows, Columns> identity;
+        for(int i = 0; i < Rows; i++)
+            for(int j = 0; j < Columns; j++)
+                (i == j) ? identity[i][j] = 1 : identity[i][j] = 0;
+        return identity;
+    }
+
+    constexpr const bool operator == (StaticMatrix const& rhs) const noexcept
     {
         for(int i = 0; i < Rows; i++)
             for(int j = 0; j < Columns; j++)
@@ -47,40 +59,38 @@ public:
         return true;
     }
 
-    constexpr const bool operator != (Matrix const& rhs) const noexcept
+    constexpr const bool operator != (StaticMatrix const& rhs) const noexcept
     {
         return !( *this == rhs );
     }
 
-    constexpr const Matrix operator + (Matrix const& rhs) const noexcept
+    constexpr const StaticMatrix operator + (StaticMatrix const& rhs) const noexcept
     {
-        Matrix<ItemType, Rows, Columns> result;
+        StaticMatrix<ItemType, Rows, Columns> result;
         for(int i = 0; i < Rows; i++)
             for(int j = 0; j < Columns; j++)
                 result[i][j] = m_items[i][j] + rhs.getElements()[i][j];
-
         return result;
     }
 
-    constexpr const Matrix operator - (Matrix const& rhs) const noexcept
+    constexpr const StaticMatrix operator - (StaticMatrix const& rhs) const noexcept
     {
-        Matrix<ItemType, Rows, Columns> result;
+        StaticMatrix<ItemType, Rows, Columns> result;
         for(int i = 0; i < Rows; i++)
             for(int j = 0; j < Columns; j++)
                 result[i][j] = m_items[i][j] - rhs.getElements()[i][j];
-
         return result;
     }
 
     /*
-        A template argument is required if the rhs Matrix is different in the length of the columns. 
+        A template argument is required if the rhs StaticMatrix is different in the length of the columns. 
         @Arg is type: std::size_t called as rhsColumns
     */
     template <std::size_t rhsColumns = Columns>
-    constexpr const Matrix<ItemType, Rows, rhsColumns> multiply(Matrix<ItemType, Rows, rhsColumns> const& rhs)
+    constexpr const StaticMatrix<ItemType, Rows, rhsColumns> multiply(StaticMatrix<ItemType, Rows, rhsColumns> const& rhs)
     {
         assert(Columns == rhs.getnbRows());
-        Matrix<ItemType, Rows, rhsColumns> result;
+        StaticMatrix<ItemType, Rows, rhsColumns> result;
 
         for(int i = 0; i <= Rows - 1; ++i)
         {
@@ -94,9 +104,9 @@ public:
         return result;
     }
 
-    constexpr const Matrix operator * (ItemType scalar) const noexcept
+    constexpr const StaticMatrix operator * (ItemType scalar) const noexcept
     {
-        Matrix<ItemType, Rows, Columns> result;
+        StaticMatrix<ItemType, Rows, Columns> result;
         for(int i = 0; i < Rows; i++)
             for(int j = 0; j < Columns; j++)
                 result[i][j] = m_items[i][j] * scalar;
@@ -119,19 +129,19 @@ private:
 };
 
 template <typename ItemType, std::size_t rows, std::size_t columns>
-constexpr const Matrix<ItemType, rows, columns> operator * (ItemType scalar, Matrix<ItemType, rows, columns> const& rhs) noexcept
+constexpr const StaticMatrix<ItemType, rows, columns> operator * (ItemType scalar, StaticMatrix<ItemType, rows, columns> const& rhs) noexcept
 {
     return rhs * scalar;
 }
 
 template <typename ItemType, std::size_t rows, std::size_t columns>
-constexpr std::ostream& operator << ( std::ostream& stream, const Matrix<ItemType, rows, columns>& matrix ) noexcept
+constexpr std::ostream& operator << ( std::ostream& stream, const StaticMatrix<ItemType, rows, columns>& StaticMatrix ) noexcept
 {
-    for(int i = 0; i < matrix.getnbRows(); i++)
+    for(int i = 0; i < StaticMatrix.getnbRows(); i++)
     {
-        for(int j = 0; j < matrix.getnbColumns(); j++)
+        for(int j = 0; j < StaticMatrix.getnbColumns(); j++)
         {
-            stream << matrix.getElements()[i][j] << " ";
+            stream << StaticMatrix.getElements()[i][j] << " ";
         }
         stream << "\n";
     }

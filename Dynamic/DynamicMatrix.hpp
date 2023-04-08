@@ -5,25 +5,37 @@
 #ifndef DYNAMICMATRIX_HPP
 #define DYNAMICMATRIX_HPP
 
-#include "../IMatrix.hpp"
+#include "IMatrix.hpp"
 
 #include <iostream>
 #include <assert.h>
 #include <vector>
 
-template <typename ItemType>
-using Vector = std::vector<ItemType>;
 
 template <typename ItemType>
 class DynamicMatrix : public IMatrix
 {
 public:
+    template <typename Type>
+    using Vector = std::vector<Type>;
+
     DynamicMatrix() noexcept = default;
     DynamicMatrix(const Vector < Vector<ItemType> >& items) noexcept
         : m_items(items)
     {
         m_rows =  m_items.size();
         m_columns = m_items[0].size();
+    }
+
+    static DynamicMatrix identityMatrix(std::size_t nxm)
+    {
+        DynamicMatrix identity(Vector< Vector<ItemType> >(nxm, Vector<ItemType>(nxm, 0)));
+        
+        std::size_t size = nxm * nxm;
+        for(int i = 0; i < nxm; i++)
+            for(int j = 0; j < nxm; j++ )
+                ((i == j)) ? identity[i][j] = 1 : identity[i][j] = 0;
+        return identity;
     }
 
     constexpr const std::size_t getnbRows() const noexcept
@@ -57,39 +69,30 @@ public:
 
     constexpr const DynamicMatrix operator + (DynamicMatrix const& rhs) const noexcept
     {
-        Vector< Vector<ItemType> > initializer(getnbRows(), Vector<ItemType>(getnbColumns(), 0));
-        DynamicMatrix<ItemType> result(initializer);
+        DynamicMatrix<ItemType> result(Vector< Vector<ItemType> >(getnbRows(), Vector<ItemType>(getnbColumns(), 0)));
         for(int i = 0; i < m_rows; i++)
             for(int j = 0; j < m_columns; j++)
                 result[i][j] = m_items[i][j] + rhs.getElements()[i][j];
-
         return result;
     }
 
     constexpr const DynamicMatrix operator - (DynamicMatrix const& rhs) const noexcept
     {
-        Vector< Vector<ItemType> > initializer(getnbRows(), Vector<ItemType>(getnbColumns(), 0));
-        DynamicMatrix<ItemType> result(initializer);
+        DynamicMatrix<ItemType> result(Vector< Vector<ItemType> >(getnbRows(), Vector<ItemType>(getnbColumns(), 0)));
         for(int i = 0; i < m_rows; i++)
             for(int j = 0; j < m_columns; j++)
                 result[i][j] = m_items[i][j] - rhs.getElements()[i][j];
-
         return result;
     }
 
     constexpr const DynamicMatrix<ItemType> multiply(DynamicMatrix<ItemType> const& rhs)
     {
         assert(getnbColumns() == rhs.getnbRows());
-        Vector< Vector<ItemType> > initializer(getnbRows(), Vector<ItemType>(rhs.getnbColumns(), 0));
-        DynamicMatrix<ItemType> result(initializer);
+        DynamicMatrix<ItemType> result(Vector< Vector<ItemType> >(getnbRows(), Vector<ItemType>(rhs.getnbColumns(), 0)));
         for(int i = 0; i <= m_rows - 1; ++i)
-        {
             for(int j = 0; j <= rhs.m_columns - 1; ++j)
-            {
                 for(int k = 0; k <= m_rows - 1; ++k)
                     result[i][j] += (m_items[i][k] * rhs.getElements()[k][j]);
-            }
-        }
         return result;
     }
 
@@ -100,8 +103,7 @@ public:
 
     constexpr const DynamicMatrix operator * (ItemType scalar) const noexcept
     {
-        Vector< Vector<ItemType> > initializer(getnbRows(), Vector<ItemType>(getnbColumns(), 0));
-        DynamicMatrix<ItemType> result(initializer);
+        DynamicMatrix<ItemType> result(Vector< Vector<ItemType> >(getnbRows(), Vector<ItemType>(getnbColumns(), 0)));
         for(int i = 0; i < m_rows; i++)
             for(int j = 0; j < m_columns; j++)
                 result[i][j] = m_items[i][j] * scalar;
@@ -135,9 +137,7 @@ constexpr std::ostream& operator << (std::ostream& stream, const DynamicMatrix<I
     for(int i = 0; i < DynamicMatrix.getnbRows(); i++)
     {
         for(int j = 0; j < DynamicMatrix.getnbColumns(); j++)
-        {
             stream << DynamicMatrix.getElements()[i][j] << " ";
-        }
         stream << "\n";
     }
     return stream;
